@@ -1,5 +1,5 @@
-
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,437 +16,592 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-            min-height: 100vh;
-            color: #f1f5f9;
-            overflow-x: hidden;
-            position: relative;
-        }
+```
+    body {
+        font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        min-height: 100vh;
+        color: #f1f5f9;
+        overflow-x: hidden;
+        position: relative;
+    }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-            pointer-events: none;
-        }
+    body::before {
+        content: '';
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
+        pointer-events: none;
+    }
 
-        @keyframes rotate {
-            100% { transform: rotate(360deg); }
-        }
+    @keyframes rotate {
+        100% { transform: rotate(360deg); }
+    }
 
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 3rem;
+        animation: fadeInDown 0.8s ease;
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        color: #94a3b8;
+        font-size: 1rem;
+    }
+
+    /* Settings Button */
+    .settings-btn {
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        width: 50px;
+        height: 50px;
+        background: rgba(30, 41, 59, 0.8);
+        backdrop-filter: blur(20px);
+        border: 2px solid rgba(99, 102, 241, 0.4);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .settings-btn:hover {
+        transform: rotate(90deg) scale(1.1);
+        background: rgba(99, 102, 241, 0.3);
+        border-color: #818cf8;
+    }
+
+    .settings-btn svg {
+        width: 24px;
+        height: 24px;
+        color: #818cf8;
+        transition: all 0.3s ease;
+    }
+
+    /* Settings Panel Overlay */
+    .settings-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 999;
+    }
+
+    .settings-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Settings Panel Slide-in */
+    .settings-panel {
+        position: fixed;
+        top: 0;
+        right: -400px;
+        width: 400px;
+        max-width: 90vw;
+        height: 100vh;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(20px);
+        border-left: 1px solid rgba(99, 102, 241, 0.3);
+        padding: 2rem;
+        overflow-y: auto;
+        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1000;
+        box-shadow: -10px 0 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .settings-panel.active {
+        right: 0;
+    }
+
+    .settings-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+    }
+
+    .settings-header-left {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .settings-icon {
+        width: 24px;
+        height: 24px;
+        color: #818cf8;
+    }
+
+    .settings-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .close-btn {
+        width: 36px;
+        height: 36px;
+        background: rgba(99, 102, 241, 0.2);
+        border: none;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .close-btn:hover {
+        background: rgba(99, 102, 241, 0.3);
+        transform: scale(1.1);
+    }
+
+    .close-btn svg {
+        width: 20px;
+        height: 20px;
+        color: #818cf8;
+    }
+
+    .settings-group {
+        display: grid;
+        gap: 2rem;
+    }
+
+    .setting-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    label {
+        font-size: 0.95rem;
+        color: #cbd5e1;
+        font-weight: 500;
+    }
+
+    .input-group {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    input[type="number"] {
+        flex: 1;
+        background: rgba(30, 41, 59, 0.6);
+        border: 2px solid rgba(99, 102, 241, 0.3);
+        border-radius: 12px;
+        padding: 0.875rem 1rem;
+        color: #f1f5f9;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    input[type="number"]:focus {
+        outline: none;
+        border-color: #818cf8;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+
+    .numbers-display {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .number-box {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+        backdrop-filter: blur(20px);
+        border: 2px solid rgba(99, 102, 241, 0.4);
+        border-radius: 20px;
+        padding: 2.5rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .number-box::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        opacity: 0;
+        transition: opacity 0.4s;
+    }
+
+    .number-box:hover::before {
+        opacity: 1;
+    }
+
+    .number-box.generating {
+        animation: pulse 0.6s ease-in-out;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .number-label {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 600;
+    }
+
+    .number-value {
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-variant-numeric: tabular-nums;
+        min-height: 4rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .number-value.empty {
+        color: #475569;
+        -webkit-text-fill-color: #475569;
+    }
+
+    .generate-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        border: none;
+        border-radius: 16px;
+        padding: 1.25rem 2rem;
+        color: white;
+        font-size: 1.125rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.8s ease 0.4s both;
+    }
+
+    .generate-btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .generate-btn:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .generate-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 50px rgba(99, 102, 241, 0.5);
+    }
+
+    .generate-btn:active {
+        transform: translateY(0);
+    }
+
+    .generate-btn span {
+        position: relative;
+        z-index: 1;
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 640px) {
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-            animation: fadeInDown 0.8s ease;
+            padding: 1rem;
         }
 
         h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
+            font-size: 2rem;
         }
 
-        .subtitle {
-            color: #94a3b8;
-            font-size: 1rem;
-        }
-
-        .settings-panel {
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            border-radius: 24px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: fadeInUp 0.8s ease 0.2s both;
-        }
-
-        .settings-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .settings-icon {
-            width: 24px;
-            height: 24px;
-            color: #818cf8;
-        }
-
-        .settings-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .settings-group {
-            display: grid;
-            gap: 1.5rem;
-        }
-
-        .setting-item {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        label {
-            font-size: 0.95rem;
-            color: #cbd5e1;
-            font-weight: 500;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        input[type="number"] {
-            flex: 1;
-            background: rgba(15, 23, 42, 0.6);
-            border: 2px solid rgba(99, 102, 241, 0.3);
-            border-radius: 12px;
-            padding: 0.875rem 1rem;
-            color: #f1f5f9;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        input[type="number"]:focus {
-            outline: none;
-            border-color: #818cf8;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        .settings-btn {
+            top: 1rem;
+            right: 1rem;
         }
 
         .numbers-display {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            animation: fadeInUp 0.8s ease 0.4s both;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
         }
 
         .number-box {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
-            backdrop-filter: blur(20px);
-            border: 2px solid rgba(99, 102, 241, 0.4);
-            border-radius: 20px;
-            padding: 2.5rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .number-box::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-
-        .number-box:hover::before {
-            opacity: 1;
-        }
-
-        .number-box.generating {
-            animation: pulse 0.6s ease-in-out;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .number-label {
-            font-size: 0.75rem;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-weight: 600;
+            padding: 2rem 1rem;
         }
 
         .number-value {
-            font-size: 3rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-variant-numeric: tabular-nums;
-            min-height: 4rem;
-            display: flex;
-            align-items: center;
+            font-size: 2.5rem;
         }
+    }
+</style>
+```
 
-        .number-value.empty {
-            color: #475569;
-            -webkit-text-fill-color: #475569;
-        }
-
-        .generate-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            border: none;
-            border-radius: 16px;
-            padding: 1.25rem 2rem;
-            color: white;
-            font-size: 1.125rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
-            position: relative;
-            overflow: hidden;
-            animation: fadeInUp 0.8s ease 0.6s both;
-        }
-
-        .generate-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .generate-btn:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .generate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 50px rgba(99, 102, 241, 0.5);
-        }
-
-        .generate-btn:active {
-            transform: translateY(0);
-        }
-
-        .generate-btn span {
-            position: relative;
-            z-index: 1;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 640px) {
-            .container {
-                padding: 1rem;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .numbers-display {
-                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-                gap: 1rem;
-            }
-
-            .number-box {
-                padding: 2rem 1rem;
-            }
-
-            .number-value {
-                font-size: 2.5rem;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Random Number Generator</h1>
-            <p class="subtitle">Generate random numbers with style</p>
-        </header>
+    <!-- Settings Button -->
+    <button class="settings-btn" id="settingsBtn" aria-label="Settings">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        </svg>
+    </button>
 
-        <div class="settings-panel">
-            <div class="settings-header">
-                <svg class="settings-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-                <h2 class="settings-title">Settings</h2>
-            </div>
-            
-            <div class="settings-group">
-                <div class="setting-item">
-                    <label for="count">How many numbers to generate?</label>
-                    <div class="input-group">
-                        <input type="number" id="count" min="1" max="10" value="3">
-                    </div>
-                </div>
-                
-                <div class="setting-item">
-                    <label for="min">Minimum value</label>
-                    <div class="input-group">
-                        <input type="number" id="min" value="1">
-                    </div>
-                </div>
-                
-                <div class="setting-item">
-                    <label for="max">Maximum value</label>
-                    <div class="input-group">
-                        <input type="number" id="max" value="100">
-                    </div>
-                </div>
-            </div>
+```
+<!-- Settings Overlay -->
+<div class="settings-overlay" id="settingsOverlay"></div>
+
+<!-- Settings Panel -->
+<div class="settings-panel" id="settingsPanel">
+    <div class="settings-header">
+        <div class="settings-header-left">
+            <svg class="settings-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <h2 class="settings-title">Settings</h2>
         </div>
-
-        <div class="numbers-display" id="numbersDisplay"></div>
-
-        <button class="generate-btn" id="generateBtn">
-            <span>Generate Numbers</span>
+        <button class="close-btn" id="closeBtn" aria-label="Close">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
         </button>
     </div>
+    
+    <div class="settings-group">
+        <div class="setting-item">
+            <label for="count">How many numbers to generate?</label>
+            <div class="input-group">
+                <input type="number" id="count" min="1" max="10" value="3">
+            </div>
+        </div>
+        
+        <div class="setting-item">
+            <label for="min">Minimum value</label>
+            <div class="input-group">
+                <input type="number" id="min" value="1">
+            </div>
+        </div>
+        
+        <div class="setting-item">
+            <label for="max">Maximum value</label>
+            <div class="input-group">
+                <input type="number" id="max" value="100">
+            </div>
+        </div>
+    </div>
+</div>
 
-    <script>
-        const countInput = document.getElementById('count');
-        const minInput = document.getElementById('min');
-        const maxInput = document.getElementById('max');
-        const numbersDisplay = document.getElementById('numbersDisplay');
-        const generateBtn = document.getElementById('generateBtn');
+<div class="container">
+    <header>
+        <h1>Random Number Generator</h1>
+        <p class="subtitle">Generate random numbers with style</p>
+    </header>
 
-        function createNumberBoxes(count) {
-            numbersDisplay.innerHTML = '';
-            for (let i = 0; i < count; i++) {
-                const box = document.createElement('div');
-                box.className = 'number-box';
-                box.innerHTML = `
-                    <span class="number-label">Number ${i + 1}</span>
-                    <div class="number-value empty">-</div>
-                `;
-                numbersDisplay.appendChild(box);
-            }
+    <div class="numbers-display" id="numbersDisplay"></div>
+
+    <button class="generate-btn" id="generateBtn">
+        <span>Generate Numbers</span>
+    </button>
+</div>
+
+<script>
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsOverlay = document.getElementById('settingsOverlay');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const closeBtn = document.getElementById('closeBtn');
+    const countInput = document.getElementById('count');
+    const minInput = document.getElementById('min');
+    const maxInput = document.getElementById('max');
+    const numbersDisplay = document.getElementById('numbersDisplay');
+    const generateBtn = document.getElementById('generateBtn');
+
+    // Settings Panel Toggle
+    function openSettings() {
+        settingsPanel.classList.add('active');
+        settingsOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSettings() {
+        settingsPanel.classList.remove('active');
+        settingsOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    settingsBtn.addEventListener('click', openSettings);
+    closeBtn.addEventListener('click', closeSettings);
+    settingsOverlay.addEventListener('click', closeSettings);
+
+    // Keyboard shortcut - ESC to close
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && settingsPanel.classList.contains('active')) {
+            closeSettings();
         }
+    });
 
-        function generateRandomNumber(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
+    function createNumberBoxes(count) {
+        numbersDisplay.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+            const box = document.createElement('div');
+            box.className = 'number-box';
+            box.innerHTML = `
+                <span class="number-label">Number ${i + 1}</span>
+                <div class="number-value empty">-</div>
+            `;
+            numbersDisplay.appendChild(box);
         }
+    }
 
-        function animateNumber(element, targetNumber, duration = 600) {
-            const start = 0;
-            const startTime = performance.now();
+    function generateRandomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function animateNumber(element, targetNumber, duration = 600) {
+        const start = 0;
+        const startTime = performance.now();
+        
+        function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
             
-            function update(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                
-                const easeOut = 1 - Math.pow(1 - progress, 3);
-                const current = Math.floor(start + (targetNumber - start) * easeOut);
-                
-                element.textContent = current;
-                element.classList.remove('empty');
-                
-                if (progress < 1) {
-                    requestAnimationFrame(update);
-                }
-            }
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            const current = Math.floor(start + (targetNumber - start) * easeOut);
             
-            requestAnimationFrame(update);
-        }
-
-        function generateNumbers() {
-            const count = parseInt(countInput.value);
-            const min = parseInt(minInput.value);
-            const max = parseInt(maxInput.value);
-
-            if (min >= max) {
-                alert('Minimum value must be less than maximum value!');
-                return;
+            element.textContent = current;
+            element.classList.remove('empty');
+            
+            if (progress < 1) {
+                requestAnimationFrame(update);
             }
+        }
+        
+        requestAnimationFrame(update);
+    }
 
-            const boxes = document.querySelectorAll('.number-box');
-            boxes.forEach((box, index) => {
-                box.classList.add('generating');
-                setTimeout(() => {
-                    box.classList.remove('generating');
-                }, 600);
+    function generateNumbers() {
+        const count = parseInt(countInput.value);
+        const min = parseInt(minInput.value);
+        const max = parseInt(maxInput.value);
 
-                const valueElement = box.querySelector('.number-value');
-                const randomNum = generateRandomNumber(min, max);
-                
-                setTimeout(() => {
-                    animateNumber(valueElement, randomNum);
-                }, index * 100);
-            });
+        if (min >= max) {
+            alert('Minimum value must be less than maximum value!');
+            return;
         }
 
-        countInput.addEventListener('change', () => {
-            const count = Math.max(1, Math.min(10, parseInt(countInput.value) || 3));
-            countInput.value = count;
-            createNumberBoxes(count);
+        const boxes = document.querySelectorAll('.number-box');
+        boxes.forEach((box, index) => {
+            box.classList.add('generating');
+            setTimeout(() => {
+                box.classList.remove('generating');
+            }, 600);
+
+            const valueElement = box.querySelector('.number-value');
+            const randomNum = generateRandomNumber(min, max);
+            
+            setTimeout(() => {
+                animateNumber(valueElement, randomNum);
+            }, index * 100);
         });
+    }
 
-        generateBtn.addEventListener('click', generateNumbers);
+    countInput.addEventListener('change', () => {
+        const count = Math.max(1, Math.min(10, parseInt(countInput.value) || 3));
+        countInput.value = count;
+        createNumberBoxes(count);
+    });
 
-        // Initialize
-        createNumberBoxes(parseInt(countInput.value));
+    generateBtn.addEventListener('click', generateNumbers);
 
-        // Register Service Worker for PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(reg => console.log('Service Worker registered'))
-                    .catch(err => console.log('Service Worker registration failed'));
-            });
-        }
-    </script>
+    // Initialize
+    createNumberBoxes(parseInt(countInput.value));
+
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed'));
+        });
+    }
+</script>
+```
+
 </body>
 </html>
