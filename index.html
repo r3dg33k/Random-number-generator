@@ -10,18 +10,42 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%236366f1'/%3E%3Ctext x='50%25' y='50%25' font-size='50' fill='white' text-anchor='middle' dy='.3em'%3ER%3C/text%3E%3C/svg%3E">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* ============================================
+           CONFIGURATION - CHANGE DEFAULTS HERE
+           ============================================ */
+        :root {
+            /* Default Settings - Change these values */
+            --default-count: 3;        /* How many numbers to generate (1-10) */
+            --default-min: 1;          /* Minimum value */
+            --default-max: 100;        /* Maximum value */
 
-```
+
+        /* Dark Mode Colors */
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-tertiary: #334155;
+        --text-primary: #f1f5f9;
+        --text-secondary: #cbd5e1;
+        --text-muted: #94a3b8;
+        --accent-primary: #6366f1;
+        --accent-secondary: #8b5cf6;
+        --accent-light: #818cf8;
+        --border-color: rgba(99, 102, 241, 0.3);
+        --glass-bg: rgba(30, 41, 59, 0.8);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+
     body {
         font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
         min-height: 100vh;
-        color: #f1f5f9;
+        color: var(--text-primary);
         overflow-x: hidden;
         position: relative;
     }
@@ -36,6 +60,7 @@
         background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
         animation: rotate 20s linear infinite;
         pointer-events: none;
+        z-index: 0;
     }
 
     @keyframes rotate {
@@ -45,63 +70,69 @@
     .container {
         max-width: 800px;
         margin: 0 auto;
-        padding: 2rem;
+        padding: 1rem 1rem 2rem;
         position: relative;
         z-index: 1;
+        padding-top: 80px; /* Space for header */
     }
 
     header {
         text-align: center;
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
         animation: fadeInDown 0.8s ease;
         position: relative;
     }
 
     h1 {
-        font-size: 2.5rem;
+        font-size: 2rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+        background: linear-gradient(135deg, var(--accent-light) 0%, #c084fc 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         margin-bottom: 0.5rem;
+        line-height: 1.2;
     }
 
     .subtitle {
-        color: #94a3b8;
-        font-size: 1rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
     }
 
-    /* Settings Button */
+    /* Settings Button - Fixed positioning */
     .settings-btn {
         position: fixed;
-        top: 2rem;
-        right: 2rem;
-        width: 50px;
-        height: 50px;
-        background: rgba(30, 41, 59, 0.8);
+        top: 1.25rem;
+        right: 1.25rem;
+        width: 48px;
+        height: 48px;
+        background: var(--glass-bg);
         backdrop-filter: blur(20px);
-        border: 2px solid rgba(99, 102, 241, 0.4);
+        border: 2px solid var(--border-color);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
         transition: all 0.3s ease;
-        z-index: 1000;
+        z-index: 999;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
 
+    .settings-btn:active {
+        transform: scale(0.95);
+    }
+
     .settings-btn:hover {
-        transform: rotate(90deg) scale(1.1);
+        transform: rotate(90deg) scale(1.05);
         background: rgba(99, 102, 241, 0.3);
-        border-color: #818cf8;
+        border-color: var(--accent-light);
     }
 
     .settings-btn svg {
         width: 24px;
         height: 24px;
-        color: #818cf8;
+        color: var(--accent-light);
         transition: all 0.3s ease;
     }
 
@@ -117,7 +148,7 @@
         opacity: 0;
         visibility: hidden;
         transition: all 0.3s ease;
-        z-index: 999;
+        z-index: 1000;
     }
 
     .settings-overlay.active {
@@ -129,17 +160,17 @@
     .settings-panel {
         position: fixed;
         top: 0;
-        right: -400px;
-        width: 400px;
-        max-width: 90vw;
+        right: -100%;
+        width: 380px;
+        max-width: 85vw;
         height: 100vh;
-        background: rgba(15, 23, 42, 0.95);
-        backdrop-filter: blur(20px);
-        border-left: 1px solid rgba(99, 102, 241, 0.3);
-        padding: 2rem;
+        height: 100dvh; /* Dynamic viewport height for mobile */
+        background: var(--bg-primary);
+        border-left: 1px solid var(--border-color);
+        padding: 1.5rem;
         overflow-y: auto;
         transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 1000;
+        z-index: 1001;
         box-shadow: -10px 0 60px rgba(0, 0, 0, 0.5);
     }
 
@@ -153,7 +184,7 @@
         justify-content: space-between;
         margin-bottom: 2rem;
         padding-bottom: 1rem;
-        border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+        border-bottom: 1px solid var(--border-color);
     }
 
     .settings-header-left {
@@ -165,7 +196,7 @@
     .settings-icon {
         width: 24px;
         height: 24px;
-        color: #818cf8;
+        color: var(--accent-light);
     }
 
     .settings-title {
@@ -174,11 +205,11 @@
     }
 
     .close-btn {
-        width: 36px;
-        height: 36px;
+        width: 40px;
+        height: 40px;
         background: rgba(99, 102, 241, 0.2);
         border: none;
-        border-radius: 8px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -188,13 +219,17 @@
 
     .close-btn:hover {
         background: rgba(99, 102, 241, 0.3);
-        transform: scale(1.1);
+        transform: scale(1.05);
+    }
+
+    .close-btn:active {
+        transform: scale(0.95);
     }
 
     .close-btn svg {
         width: 20px;
         height: 20px;
-        color: #818cf8;
+        color: var(--accent-light);
     }
 
     .settings-group {
@@ -210,7 +245,7 @@
 
     label {
         font-size: 0.95rem;
-        color: #cbd5e1;
+        color: var(--text-secondary);
         font-weight: 500;
     }
 
@@ -222,25 +257,25 @@
 
     input[type="number"] {
         flex: 1;
-        background: rgba(30, 41, 59, 0.6);
-        border: 2px solid rgba(99, 102, 241, 0.3);
+        background: var(--bg-secondary);
+        border: 2px solid var(--border-color);
         border-radius: 12px;
         padding: 0.875rem 1rem;
-        color: #f1f5f9;
+        color: var(--text-primary);
         font-size: 1rem;
         transition: all 0.3s ease;
     }
 
     input[type="number"]:focus {
         outline: none;
-        border-color: #818cf8;
+        border-color: var(--accent-light);
         box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
     }
 
     .numbers-display {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
         margin-bottom: 2rem;
         animation: fadeInUp 0.8s ease 0.2s both;
     }
@@ -248,9 +283,9 @@
     .number-box {
         background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
         backdrop-filter: blur(20px);
-        border: 2px solid rgba(99, 102, 241, 0.4);
+        border: 2px solid var(--border-color);
         border-radius: 20px;
-        padding: 2.5rem 1.5rem;
+        padding: 2rem 1rem;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -259,6 +294,7 @@
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
+        min-height: 140px;
     }
 
     .number-box::before {
@@ -273,7 +309,7 @@
         transition: opacity 0.4s;
     }
 
-    .number-box:hover::before {
+    .number-box:active::before {
         opacity: 1;
     }
 
@@ -287,22 +323,21 @@
     }
 
     .number-label {
-        font-size: 0.75rem;
-        color: #94a3b8;
+        font-size: 0.7rem;
+        color: var(--text-muted);
         text-transform: uppercase;
         letter-spacing: 0.1em;
         font-weight: 600;
     }
 
     .number-value {
-        font-size: 3rem;
+        font-size: 2.5rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+        background: linear-gradient(135deg, var(--accent-light) 0%, #c084fc 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         font-variant-numeric: tabular-nums;
-        min-height: 4rem;
         display: flex;
         align-items: center;
     }
@@ -314,10 +349,10 @@
 
     .generate-btn {
         width: 100%;
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
         border: none;
         border-radius: 16px;
-        padding: 1.25rem 2rem;
+        padding: 1.125rem 2rem;
         color: white;
         font-size: 1.125rem;
         font-weight: 600;
@@ -342,18 +377,13 @@
         transition: width 0.6s, height 0.6s;
     }
 
-    .generate-btn:hover::before {
+    .generate-btn:active::before {
         width: 300px;
         height: 300px;
     }
 
-    .generate-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 15px 50px rgba(99, 102, 241, 0.5);
-    }
-
     .generate-btn:active {
-        transform: translateY(0);
+        transform: translateY(2px);
     }
 
     .generate-btn span {
@@ -385,29 +415,52 @@
 
     @media (max-width: 640px) {
         .container {
-            padding: 1rem;
+            padding: 1rem 0.75rem 1.5rem;
+            padding-top: 70px;
         }
 
         h1 {
-            font-size: 2rem;
+            font-size: 1.75rem;
         }
 
         .settings-btn {
             top: 1rem;
             right: 1rem;
+            width: 44px;
+            height: 44px;
         }
 
         .numbers-display {
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 0.75rem;
         }
 
         .number-box {
-            padding: 2rem 1rem;
+            padding: 1.5rem 0.75rem;
+            min-height: 120px;
         }
 
         .number-value {
-            font-size: 2.5rem;
+            font-size: 2rem;
+        }
+
+        .generate-btn {
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        .numbers-display {
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+        }
+
+        .number-value {
+            font-size: 1.75rem;
         }
     }
 </style>
@@ -423,7 +476,6 @@
         </svg>
     </button>
 
-```
 <!-- Settings Overlay -->
 <div class="settings-overlay" id="settingsOverlay"></div>
 
@@ -448,21 +500,21 @@
         <div class="setting-item">
             <label for="count">How many numbers to generate?</label>
             <div class="input-group">
-                <input type="number" id="count" min="1" max="10" value="3">
+                <input type="number" id="count" min="1" max="10">
             </div>
         </div>
         
         <div class="setting-item">
             <label for="min">Minimum value</label>
             <div class="input-group">
-                <input type="number" id="min" value="1">
+                <input type="number" id="min">
             </div>
         </div>
         
         <div class="setting-item">
             <label for="max">Maximum value</label>
             <div class="input-group">
-                <input type="number" id="max" value="100">
+                <input type="number" id="max">
             </div>
         </div>
     </div>
@@ -482,6 +534,13 @@
 </div>
 
 <script>
+    // ============================================
+    // CONFIGURATION - Load from CSS variables
+    // ============================================
+    const DEFAULT_COUNT = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--default-count')) || 3;
+    const DEFAULT_MIN = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--default-min')) || 1;
+    const DEFAULT_MAX = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--default-max')) || 100;
+
     const settingsBtn = document.getElementById('settingsBtn');
     const settingsOverlay = document.getElementById('settingsOverlay');
     const settingsPanel = document.getElementById('settingsPanel');
@@ -491,6 +550,33 @@
     const maxInput = document.getElementById('max');
     const numbersDisplay = document.getElementById('numbersDisplay');
     const generateBtn = document.getElementById('generateBtn');
+
+    // Prevent device sleep using Wake Lock API
+    let wakeLock = null;
+    async function requestWakeLock() {
+        try {
+            if ('wakeLock' in navigator) {
+                wakeLock = await navigator.wakeLock.request('screen');
+                console.log('Wake Lock activated');
+                
+                wakeLock.addEventListener('release', () => {
+                    console.log('Wake Lock released');
+                });
+            }
+        } catch (err) {
+            console.log('Wake Lock error:', err);
+        }
+    }
+
+    // Re-request wake lock when page becomes visible
+    document.addEventListener('visibilitychange', async () => {
+        if (wakeLock !== null && document.visibilityState === 'visible') {
+            await requestWakeLock();
+        }
+    });
+
+    // Request wake lock on page load
+    requestWakeLock();
 
     // Settings Panel Toggle
     function openSettings() {
@@ -582,15 +668,18 @@
     }
 
     countInput.addEventListener('change', () => {
-        const count = Math.max(1, Math.min(10, parseInt(countInput.value) || 3));
+        const count = Math.max(1, Math.min(10, parseInt(countInput.value) || DEFAULT_COUNT));
         countInput.value = count;
         createNumberBoxes(count);
     });
 
     generateBtn.addEventListener('click', generateNumbers);
 
-    // Initialize
-    createNumberBoxes(parseInt(countInput.value));
+    // Initialize with default values
+    countInput.value = DEFAULT_COUNT;
+    minInput.value = DEFAULT_MIN;
+    maxInput.value = DEFAULT_MAX;
+    createNumberBoxes(DEFAULT_COUNT);
 
     // Register Service Worker for PWA
     if ('serviceWorker' in navigator) {
@@ -601,7 +690,7 @@
         });
     }
 </script>
-```
+
 
 </body>
 </html>
