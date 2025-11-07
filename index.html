@@ -4,36 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Number Generator</title>
-    <meta name="description" content="Modern random number generator PWA">
+    <title>Game Number Generator</title>
+    <meta name="description" content="Multiplayer game number generator PWA">
     <meta name="theme-color" content="#6366f1">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%236366f1'/%3E%3Ctext x='50%25' y='50%25' font-size='50' fill='white' text-anchor='middle' dy='.3em'%3ER%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%236366f1'/%3E%3Ctext x='50%25' y='50%25' font-size='50' fill='white' text-anchor='middle' dy='.3em'%3E%23%3C/text%3E%3C/svg%3E">
     <style>
-        /* ============================================
-           CONFIGURATION - CHANGE DEFAULTS HERE
-           ============================================ */
         :root {
-            /* Default Settings - Change these values */
-            --default-count: 2;        /* How many numbers to generate (1-10) */
-            --default-min: 1;          /* Minimum value */
-            --default-max: 6;        /* Maximum value */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --accent-primary: #6366f1;
+            --border-color: rgba(99, 102, 241, 0.3);
+            --glass-bg: rgba(30, 41, 59, 0.8);
+        }
 
-
-        /* Dark Mode Colors */
-        --bg-primary: #0f172a;
-        --bg-secondary: #1e293b;
-        --bg-tertiary: #334155;
-        --text-primary: #f1f5f9;
-        --text-secondary: #cbd5e1;
-        --text-muted: #94a3b8;
-        --accent-primary: #6366f1;
-        --accent-secondary: #8b5cf6;
-        --accent-light: #818cf8;
-        --border-color: rgba(99, 102, 241, 0.3);
-        --glass-bg: rgba(30, 41, 59, 0.8);
-    }
-
+```
     * {
         margin: 0;
         padding: 0;
@@ -73,20 +62,37 @@
         padding: 1rem 1rem 2rem;
         position: relative;
         z-index: 1;
-        padding-top: 80px; /* Space for header */
+    }
+
+    /* Setup Screen */
+    .setup-screen {
+        padding-top: 80px;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .setup-screen.hidden {
+        display: none;
+    }
+
+    .game-screen {
+        padding-top: 20px;
+        display: none;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .game-screen.active {
+        display: block;
     }
 
     header {
         text-align: center;
         margin-bottom: 2rem;
-        animation: fadeInDown 0.8s ease;
-        position: relative;
     }
 
     h1 {
         font-size: 2rem;
         font-weight: 700;
-        background: linear-gradient(135deg, var(--accent-light) 0%, #c084fc 100%);
+        background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -99,164 +105,31 @@
         font-size: 0.9rem;
     }
 
-    /* Settings Button - Fixed positioning */
-    .settings-btn {
-        position: fixed;
-        top: 1.25rem;
-        right: 1.25rem;
-        width: 48px;
-        height: 48px;
+    /* Setup Form */
+    .setup-card {
         background: var(--glass-bg);
         backdrop-filter: blur(20px);
         border: 2px solid var(--border-color);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        z-index: 999;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        border-radius: 24px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
     }
 
-    .settings-btn:active {
-        transform: scale(0.95);
-    }
-
-    .settings-btn:hover {
-        transform: rotate(90deg) scale(1.05);
-        background: rgba(99, 102, 241, 0.3);
-        border-color: var(--accent-light);
-    }
-
-    .settings-btn svg {
-        width: 24px;
-        height: 24px;
-        color: var(--accent-light);
-        transition: all 0.3s ease;
-    }
-
-    /* Settings Panel Overlay */
-    .settings-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(8px);
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
-        z-index: 1000;
-    }
-
-    .settings-overlay.active {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    /* Settings Panel Slide-in */
-    .settings-panel {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 380px;
-        max-width: 85vw;
-        height: 100vh;
-        height: 100dvh; /* Dynamic viewport height for mobile */
-        background: var(--bg-primary);
-        border-left: 1px solid var(--border-color);
-        padding: 1.5rem;
-        overflow-y: auto;
-        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 1001;
-        box-shadow: -10px 0 60px rgba(0, 0, 0, 0.5);
-    }
-
-    .settings-panel.active {
-        right: 0;
-    }
-
-    .settings-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 2rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .settings-header-left {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .settings-icon {
-        width: 24px;
-        height: 24px;
-        color: var(--accent-light);
-    }
-
-    .settings-title {
-        font-size: 1.5rem;
-        font-weight: 600;
-    }
-
-    .close-btn {
-        width: 40px;
-        height: 40px;
-        background: rgba(99, 102, 241, 0.2);
-        border: none;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .close-btn:hover {
-        background: rgba(99, 102, 241, 0.3);
-        transform: scale(1.05);
-    }
-
-    .close-btn:active {
-        transform: scale(0.95);
-    }
-
-    .close-btn svg {
-        width: 20px;
-        height: 20px;
-        color: var(--accent-light);
-    }
-
-    .settings-group {
-        display: grid;
-        gap: 2rem;
-    }
-
-    .setting-item {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
+    .form-group {
+        margin-bottom: 1.5rem;
     }
 
     label {
+        display: block;
         font-size: 0.95rem;
         color: var(--text-secondary);
         font-weight: 500;
+        margin-bottom: 0.75rem;
     }
 
-    .input-group {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-    }
-
+    input[type="text"],
     input[type="number"] {
-        flex: 1;
+        width: 100%;
         background: var(--bg-secondary);
         border: 2px solid var(--border-color);
         border-radius: 12px;
@@ -266,24 +139,114 @@
         transition: all 0.3s ease;
     }
 
-    input[type="number"]:focus {
+    input:focus {
         outline: none;
-        border-color: var(--accent-light);
+        border-color: #818cf8;
         box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
     }
 
-    .numbers-display {
+    .player-inputs {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .player-input-row {
+        display: grid;
+        grid-template-columns: 40px 1fr;
+        gap: 0.75rem;
+        align-items: center;
+    }
+
+    .player-color {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        border: 2px solid var(--border-color);
+    }
+
+    .btn {
+        width: 100%;
+        background: linear-gradient(135deg, var(--accent-primary) 0%, #8b5cf6 100%);
+        border: none;
+        border-radius: 16px;
+        padding: 1.125rem 2rem;
+        color: white;
+        font-size: 1.125rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn:active {
+        transform: translateY(2px);
+    }
+
+    .btn-secondary {
+        background: rgba(99, 102, 241, 0.2);
+        border: 2px solid var(--border-color);
+        box-shadow: none;
+        margin-top: 1rem;
+    }
+
+    /* Game Screen */
+    .game-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--border-color);
+        border-radius: 16px;
+    }
+
+    .current-player {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .player-indicator {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .player-name {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .reset-btn {
+        background: rgba(239, 68, 68, 0.2);
+        border: 2px solid rgba(239, 68, 68, 0.4);
+        color: #fca5a5;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .reset-btn:active {
+        transform: scale(0.95);
+    }
+
+    /* Number Display */
+    .dice-container {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
         gap: 1rem;
-        margin-bottom: 2rem;
-        animation: fadeInUp 0.8s ease 0.2s both;
+        margin-bottom: 1.5rem;
     }
 
-    .number-box {
+    .dice-box {
         background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
         backdrop-filter: blur(20px);
-        border: 2px solid var(--border-color);
+        border: 3px solid;
         border-radius: 20px;
         padding: 2rem 1rem;
         display: flex;
@@ -297,32 +260,18 @@
         min-height: 140px;
     }
 
-    .number-box::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-        opacity: 0;
-        transition: opacity 0.4s;
+    .dice-box.rolling {
+        animation: shake 0.5s ease-in-out;
     }
 
-    .number-box:active::before {
-        opacity: 1;
+    @keyframes shake {
+        0%, 100% { transform: translateX(0) rotate(0deg); }
+        25% { transform: translateX(-5px) rotate(-5deg); }
+        50% { transform: translateX(5px) rotate(5deg); }
+        75% { transform: translateX(-5px) rotate(-5deg); }
     }
 
-    .number-box.generating {
-        animation: pulse 0.6s ease-in-out;
-    }
-
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-    }
-
-    .number-label {
+    .dice-label {
         font-size: 0.7rem;
         color: var(--text-muted);
         text-transform: uppercase;
@@ -330,26 +279,19 @@
         font-weight: 600;
     }
 
-    .number-value {
-        font-size: 2.5rem;
+    .dice-value {
+        font-size: 3rem;
         font-weight: 700;
-        background: linear-gradient(135deg, var(--accent-light) 0%, #c084fc 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
         font-variant-numeric: tabular-nums;
-        display: flex;
-        align-items: center;
     }
 
-    .number-value.empty {
+    .dice-value.empty {
         color: #475569;
-        -webkit-text-fill-color: #475569;
     }
 
-    .generate-btn {
+    .roll-btn {
         width: 100%;
-        background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+        background: linear-gradient(135deg, var(--accent-primary) 0%, #8b5cf6 100%);
         border: none;
         border-radius: 16px;
         padding: 1.125rem 2rem;
@@ -359,108 +301,120 @@
         cursor: pointer;
         transition: all 0.3s ease;
         box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
-        position: relative;
-        overflow: hidden;
-        animation: fadeInUp 0.8s ease 0.4s both;
+        margin-bottom: 1rem;
     }
 
-    .generate-btn::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        transform: translate(-50%, -50%);
-        transition: width 0.6s, height 0.6s;
-    }
-
-    .generate-btn:active::before {
-        width: 300px;
-        height: 300px;
-    }
-
-    .generate-btn:active {
+    .roll-btn:active {
         transform: translateY(2px);
     }
 
-    .generate-btn span {
-        position: relative;
-        z-index: 1;
+    .next-turn-btn {
+        width: 100%;
+        background: rgba(34, 197, 94, 0.2);
+        border: 2px solid rgba(34, 197, 94, 0.4);
+        color: #86efac;
+        border-radius: 16px;
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
     }
 
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .next-turn-btn:active {
+        transform: scale(0.98);
     }
 
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    /* History */
+    .history-section {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--border-color);
+        border-radius: 20px;
+    }
+
+    .history-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-secondary);
+    }
+
+    .history-list {
+        display: grid;
+        gap: 0.5rem;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .history-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        background: var(--bg-secondary);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+    }
+
+    .history-color {
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        flex-shrink: 0;
+    }
+
+    .history-info {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .history-player {
+        font-weight: 500;
+    }
+
+    .history-rolls {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     @media (max-width: 640px) {
         .container {
             padding: 1rem 0.75rem 1.5rem;
-            padding-top: 70px;
         }
 
         h1 {
             font-size: 1.75rem;
         }
 
-        .settings-btn {
-            top: 1rem;
-            right: 1rem;
-            width: 44px;
-            height: 44px;
-        }
-
-        .numbers-display {
+        .dice-container {
             grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
             gap: 0.75rem;
         }
 
-        .number-box {
+        .dice-box {
             padding: 1.5rem 0.75rem;
             min-height: 120px;
         }
 
-        .number-value {
-            font-size: 2rem;
+        .dice-value {
+            font-size: 2.5rem;
         }
 
-        .generate-btn {
-            padding: 1rem 1.5rem;
-            font-size: 1rem;
-        }
-    }
-
-    @media (max-width: 400px) {
-        h1 {
-            font-size: 1.5rem;
-        }
-
-        .numbers-display {
-            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-        }
-
-        .number-value {
-            font-size: 1.75rem;
+        .game-header {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
         }
     }
 </style>
@@ -468,229 +422,277 @@
 
 </head>
 <body>
-    <!-- Settings Button -->
-    <button class="settings-btn" id="settingsBtn" aria-label="Settings">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-        </svg>
-    </button>
+    <!-- Setup Screen -->
+    <div class="setup-screen" id="setupScreen">
+        <div class="container">
+            <header>
+                <h1>Game Number Generator</h1>
+                <p class="subtitle">Setup your multiplayer number game</p>
+            </header>
 
-<!-- Settings Overlay -->
-<div class="settings-overlay" id="settingsOverlay"></div>
+```
+        <div class="setup-card">
+            <div class="form-group">
+                <label for="numPlayers">Number of Players</label>
+                <input type="number" id="numPlayers" min="2" max="8" value="2">
+            </div>
 
-<!-- Settings Panel -->
-<div class="settings-panel" id="settingsPanel">
-    <div class="settings-header">
-        <div class="settings-header-left">
-            <svg class="settings-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-            </svg>
-            <h2 class="settings-title">Settings</h2>
-        </div>
-        <button class="close-btn" id="closeBtn" aria-label="Close">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
-    </div>
-    
-    <div class="settings-group">
-        <div class="setting-item">
-            <label for="count">How many numbers to generate?</label>
-            <div class="input-group">
-                <input type="number" id="count" min="1" max="10">
+            <div class="form-group">
+                <label for="numDice">Numbers per Turn</label>
+                <input type="number" id="numDice" min="1" max="6" value="1">
             </div>
-        </div>
-        
-        <div class="setting-item">
-            <label for="min">Minimum value</label>
-            <div class="input-group">
-                <input type="number" id="min">
+
+            <div class="form-group">
+                <label for="minValue">Minimum Value</label>
+                <input type="number" id="minValue" value="1">
             </div>
-        </div>
-        
-        <div class="setting-item">
-            <label for="max">Maximum value</label>
-            <div class="input-group">
-                <input type="number" id="max">
+
+            <div class="form-group">
+                <label for="maxValue">Maximum Value</label>
+                <input type="number" id="maxValue" value="6">
             </div>
+
+            <button class="btn" id="setupPlayersBtn">Setup Players</button>
+        </div>
+
+        <div class="setup-card" id="playerSetupCard" style="display: none;">
+            <div class="form-group">
+                <label>Enter Player Initials</label>
+                <div class="player-inputs" id="playerInputs"></div>
+            </div>
+            <button class="btn" id="startGameBtn">Start Game</button>
         </div>
     </div>
 </div>
 
-<div class="container">
-    <header>
-        <h1>Random Number Generator</h1>
-        <p class="subtitle">Generate random numbers with style</p>
-    </header>
+<!-- Game Screen -->
+<div class="game-screen" id="gameScreen">
+    <div class="container">
+        <div class="game-header">
+            <div class="current-player">
+                <div class="player-indicator" id="currentPlayerColor"></div>
+                <div>
+                    <div class="player-name" id="currentPlayerName"></div>
+                    <div class="subtitle" style="margin: 0;">Your Turn</div>
+                </div>
+            </div>
+            <button class="reset-btn" id="resetBtn">New Game</button>
+        </div>
 
-    <div class="numbers-display" id="numbersDisplay"></div>
+        <div class="dice-container" id="diceContainer"></div>
 
-    <button class="generate-btn" id="generateBtn">
-        <span>Generate Numbers</span>
-    </button>
+        <button class="roll-btn" id="rollBtn">✨ Generate Numbers</button>
+        <button class="next-turn-btn" id="nextTurnBtn" style="display: none;">Next Player →</button>
+
+        <div class="history-section">
+            <div class="history-title">Generation History</div>
+            <div class="history-list" id="historyList"></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 1.5rem; padding: 1rem; color: var(--text-muted); font-size: 0.85rem; opacity: 0.7;">
+            Generated by AI
+        </div>
+    </div>
 </div>
 
 <script>
-    // ============================================
-    // CONFIGURATION - Load from CSS variables
-    // ============================================
-    const DEFAULT_COUNT = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--default-count')) || 3;
-    const DEFAULT_MIN = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--default-min')) || 1;
-    const DEFAULT_MAX = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--default-max')) || 100;
+    // Player colors
+    const PLAYER_COLORS = [
+        '#ef4444', '#f59e0b', '#10b981', '#3b82f6',
+        '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'
+    ];
 
-    const settingsBtn = document.getElementById('settingsBtn');
-    const settingsOverlay = document.getElementById('settingsOverlay');
-    const settingsPanel = document.getElementById('settingsPanel');
-    const closeBtn = document.getElementById('closeBtn');
-    const countInput = document.getElementById('count');
-    const minInput = document.getElementById('min');
-    const maxInput = document.getElementById('max');
-    const numbersDisplay = document.getElementById('numbersDisplay');
-    const generateBtn = document.getElementById('generateBtn');
+    let gameState = {
+        players: [],
+        currentPlayerIndex: 0,
+        numDice: 1,
+        minValue: 1,
+        maxValue: 6,
+        history: [],
+        hasRolled: false
+    };
 
-    // Prevent device sleep using Wake Lock API
+    // Wake Lock
     let wakeLock = null;
     async function requestWakeLock() {
         try {
             if ('wakeLock' in navigator) {
                 wakeLock = await navigator.wakeLock.request('screen');
-                console.log('Wake Lock activated');
-                
-                wakeLock.addEventListener('release', () => {
-                    console.log('Wake Lock released');
-                });
             }
         } catch (err) {
             console.log('Wake Lock error:', err);
         }
     }
 
-    // Re-request wake lock when page becomes visible
     document.addEventListener('visibilitychange', async () => {
         if (wakeLock !== null && document.visibilityState === 'visible') {
             await requestWakeLock();
         }
     });
 
-    // Request wake lock on page load
     requestWakeLock();
 
-    // Settings Panel Toggle
-    function openSettings() {
-        settingsPanel.classList.add('active');
-        settingsOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
+    // Setup Phase
+    document.getElementById('setupPlayersBtn').addEventListener('click', () => {
+        const numPlayers = parseInt(document.getElementById('numPlayers').value);
+        const numDice = parseInt(document.getElementById('numDice').value);
+        const minValue = parseInt(document.getElementById('minValue').value);
+        const maxValue = parseInt(document.getElementById('maxValue').value);
 
-    function closeSettings() {
-        settingsPanel.classList.remove('active');
-        settingsOverlay.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-
-    settingsBtn.addEventListener('click', openSettings);
-    closeBtn.addEventListener('click', closeSettings);
-    settingsOverlay.addEventListener('click', closeSettings);
-
-    // Keyboard shortcut - ESC to close
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && settingsPanel.classList.contains('active')) {
-            closeSettings();
-        }
-    });
-
-    function createNumberBoxes(count) {
-        numbersDisplay.innerHTML = '';
-        for (let i = 0; i < count; i++) {
-            const box = document.createElement('div');
-            box.className = 'number-box';
-            box.innerHTML = `
-                <span class="number-label">Number ${i + 1}</span>
-                <div class="number-value empty">-</div>
-            `;
-            numbersDisplay.appendChild(box);
-        }
-    }
-
-    function generateRandomNumber(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function animateNumber(element, targetNumber, duration = 600) {
-        const start = 0;
-        const startTime = performance.now();
-        
-        function update(currentTime) {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            
-            const easeOut = 1 - Math.pow(1 - progress, 3);
-            const current = Math.floor(start + (targetNumber - start) * easeOut);
-            
-            element.textContent = current;
-            element.classList.remove('empty');
-            
-            if (progress < 1) {
-                requestAnimationFrame(update);
-            }
-        }
-        
-        requestAnimationFrame(update);
-    }
-
-    function generateNumbers() {
-        const count = parseInt(countInput.value);
-        const min = parseInt(minInput.value);
-        const max = parseInt(maxInput.value);
-
-        if (min >= max) {
+        if (minValue >= maxValue) {
             alert('Minimum value must be less than maximum value!');
             return;
         }
 
-        const boxes = document.querySelectorAll('.number-box');
-        boxes.forEach((box, index) => {
-            box.classList.add('generating');
-            setTimeout(() => {
-                box.classList.remove('generating');
-            }, 600);
+        gameState.numDice = numDice;
+        gameState.minValue = minValue;
+        gameState.maxValue = maxValue;
 
-            const valueElement = box.querySelector('.number-value');
-            const randomNum = generateRandomNumber(min, max);
-            
-            setTimeout(() => {
-                animateNumber(valueElement, randomNum);
-            }, index * 100);
-        });
-    }
+        const playerInputs = document.getElementById('playerInputs');
+        playerInputs.innerHTML = '';
 
-    countInput.addEventListener('change', () => {
-        const count = Math.max(1, Math.min(10, parseInt(countInput.value) || DEFAULT_COUNT));
-        countInput.value = count;
-        createNumberBoxes(count);
+        for (let i = 0; i < numPlayers; i++) {
+            const row = document.createElement('div');
+            row.className = 'player-input-row';
+            row.innerHTML = `
+                <div class="player-color" style="background: ${PLAYER_COLORS[i]}"></div>
+                <input type="text" placeholder="Player ${i + 1} initials (e.g., JD)" maxlength="3" data-player="${i}">
+            `;
+            playerInputs.appendChild(row);
+        }
+
+        document.getElementById('playerSetupCard').style.display = 'block';
     });
 
-    generateBtn.addEventListener('click', generateNumbers);
+    document.getElementById('startGameBtn').addEventListener('click', () => {
+        const inputs = document.querySelectorAll('#playerInputs input');
+        const players = [];
 
-    // Initialize with default values
-    countInput.value = DEFAULT_COUNT;
-    minInput.value = DEFAULT_MIN;
-    maxInput.value = DEFAULT_MAX;
-    createNumberBoxes(DEFAULT_COUNT);
+        inputs.forEach((input, index) => {
+            const initials = input.value.trim().toUpperCase() || `P${index + 1}`;
+            players.push({
+                initials: initials,
+                color: PLAYER_COLORS[index]
+            });
+        });
 
-    // Register Service Worker for PWA
+        gameState.players = players;
+        gameState.currentPlayerIndex = 0;
+        gameState.history = [];
+        gameState.hasRolled = false;
+
+        startGame();
+    });
+
+    function startGame() {
+        document.getElementById('setupScreen').classList.add('hidden');
+        document.getElementById('gameScreen').classList.add('active');
+
+        createDiceBoxes();
+        updateCurrentPlayer();
+    }
+
+    function createDiceBoxes() {
+        const container = document.getElementById('diceContainer');
+        container.innerHTML = '';
+
+        for (let i = 0; i < gameState.numDice; i++) {
+            const box = document.createElement('div');
+            box.className = 'dice-box';
+            const currentPlayer = gameState.players[gameState.currentPlayerIndex];
+            box.style.borderColor = currentPlayer.color;
+            box.innerHTML = `
+                <span class="dice-label">Number ${i + 1}</span>
+                <div class="dice-value empty" style="color: ${currentPlayer.color}">?</div>
+            `;
+            container.appendChild(box);
+        }
+    }
+
+    function updateCurrentPlayer() {
+        const currentPlayer = gameState.players[gameState.currentPlayerIndex];
+        document.getElementById('currentPlayerColor').style.background = currentPlayer.color;
+        document.getElementById('currentPlayerName').textContent = currentPlayer.initials;
+        
+        createDiceBoxes();
+        document.getElementById('rollBtn').style.display = 'block';
+        document.getElementById('nextTurnBtn').style.display = 'none';
+        gameState.hasRolled = false;
+    }
+
+    document.getElementById('rollBtn').addEventListener('click', () => {
+        if (gameState.hasRolled) return;
+
+        const boxes = document.querySelectorAll('.dice-box');
+        const rolls = [];
+        
+        boxes.forEach((box, index) => {
+            box.classList.add('rolling');
+            
+            setTimeout(() => {
+                const value = Math.floor(Math.random() * (gameState.maxValue - gameState.minValue + 1)) + gameState.minValue;
+                rolls.push(value);
+                
+                const valueElement = box.querySelector('.dice-value');
+                valueElement.textContent = value;
+                valueElement.classList.remove('empty');
+                
+                box.classList.remove('rolling');
+            }, 500);
+        });
+
+        setTimeout(() => {
+            addToHistory(rolls);
+            gameState.hasRolled = true;
+            document.getElementById('rollBtn').style.display = 'none';
+            document.getElementById('nextTurnBtn').style.display = 'block';
+        }, 600);
+    });
+
+    document.getElementById('nextTurnBtn').addEventListener('click', () => {
+        gameState.currentPlayerIndex = (gameState.currentPlayerIndex + 1) % gameState.players.length;
+        updateCurrentPlayer();
+    });
+
+    function addToHistory(rolls) {
+        const currentPlayer = gameState.players[gameState.currentPlayerIndex];
+        const historyItem = {
+            player: currentPlayer,
+            rolls: rolls,
+            timestamp: new Date()
+        };
+
+        gameState.history.unshift(historyItem);
+
+        const historyList = document.getElementById('historyList');
+        const item = document.createElement('div');
+        item.className = 'history-item';
+        item.style.animation = 'fadeIn 0.3s ease';
+        item.innerHTML = `
+            <div class="history-color" style="background: ${currentPlayer.color}"></div>
+            <div class="history-info">
+                <span class="history-player">${currentPlayer.initials}</span>
+                <span class="history-rolls">${rolls.join(', ')}</span>
+            </div>
+        `;
+        historyList.insertBefore(item, historyList.firstChild);
+    }
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        if (confirm('Start a new game? This will reset everything.')) {
+            location.reload();
+        }
+    });
+
+    // Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('service-worker.js')
-                .then(reg => console.log('Service Worker registered'))
                 .catch(err => console.log('Service Worker registration failed'));
         });
     }
 </script>
-
+```
 
 </body>
 </html>
