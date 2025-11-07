@@ -22,7 +22,6 @@ Visit: `https://your-username.github.io/your-repo-name/`
 
 Create these files in your GitHub repository:
 
-```
 your-repo-name/
 ├── index.html
 ├── manifest.json
