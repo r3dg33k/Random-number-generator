@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -22,404 +21,442 @@
             --glass-bg: rgba(30, 41, 59, 0.8);
         }
 
-```
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    body {
-        font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
-        min-height: 100vh;
-        color: var(--text-primary);
-        overflow-x: hidden;
-        position: relative;
-    }
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+        }
 
-    body::before {
-        content: '';
-        position: fixed;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
-        animation: rotate 20s linear infinite;
-        pointer-events: none;
-        z-index: 0;
-    }
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-    @keyframes rotate {
-        100% { transform: rotate(360deg); }
-    }
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
 
-    .container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 1rem 1rem 2rem;
-        position: relative;
-        z-index: 1;
-    }
-
-    /* Setup Screen */
-    .setup-screen {
-        padding-top: 80px;
-        animation: fadeIn 0.5s ease;
-    }
-
-    .setup-screen.hidden {
-        display: none;
-    }
-
-    .game-screen {
-        padding-top: 20px;
-        display: none;
-        animation: fadeIn 0.5s ease;
-    }
-
-    .game-screen.active {
-        display: block;
-    }
-
-    header {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-
-    h1 {
-        font-size: 2rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 0.5rem;
-        line-height: 1.2;
-    }
-
-    .subtitle {
-        color: var(--text-muted);
-        font-size: 0.9rem;
-    }
-
-    /* Setup Form */
-    .setup-card {
-        background: var(--glass-bg);
-        backdrop-filter: blur(20px);
-        border: 2px solid var(--border-color);
-        border-radius: 24px;
-        padding: 2rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    label {
-        display: block;
-        font-size: 0.95rem;
-        color: var(--text-secondary);
-        font-weight: 500;
-        margin-bottom: 0.75rem;
-    }
-
-    input[type="text"],
-    input[type="number"] {
-        width: 100%;
-        background: var(--bg-secondary);
-        border: 2px solid var(--border-color);
-        border-radius: 12px;
-        padding: 0.875rem 1rem;
-        color: var(--text-primary);
-        font-size: 1rem;
-        transition: all 0.3s ease;
-    }
-
-    input:focus {
-        outline: none;
-        border-color: #818cf8;
-        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-    }
-
-    .player-inputs {
-        display: grid;
-        gap: 1rem;
-    }
-
-    .player-input-row {
-        display: grid;
-        grid-template-columns: 40px 1fr;
-        gap: 0.75rem;
-        align-items: center;
-    }
-
-    .player-color {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        border: 2px solid var(--border-color);
-    }
-
-    .btn {
-        width: 100%;
-        background: linear-gradient(135deg, var(--accent-primary) 0%, #8b5cf6 100%);
-        border: none;
-        border-radius: 16px;
-        padding: 1.125rem 2rem;
-        color: white;
-        font-size: 1.125rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
-    }
-
-    .btn:active {
-        transform: translateY(2px);
-    }
-
-    .btn-secondary {
-        background: rgba(99, 102, 241, 0.2);
-        border: 2px solid var(--border-color);
-        box-shadow: none;
-        margin-top: 1rem;
-    }
-
-    /* Game Screen */
-    .game-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        padding: 1rem;
-        background: var(--glass-bg);
-        backdrop-filter: blur(20px);
-        border: 2px solid var(--border-color);
-        border-radius: 16px;
-    }
-
-    .current-player {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .player-indicator {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .player-name {
-        font-size: 1.25rem;
-        font-weight: 600;
-    }
-
-    .reset-btn {
-        background: rgba(239, 68, 68, 0.2);
-        border: 2px solid rgba(239, 68, 68, 0.4);
-        color: #fca5a5;
-        padding: 0.5rem 1rem;
-        border-radius: 10px;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .reset-btn:active {
-        transform: scale(0.95);
-    }
-
-    /* Number Display */
-    .dice-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .dice-box {
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
-        backdrop-filter: blur(20px);
-        border: 3px solid;
-        border-radius: 20px;
-        padding: 2rem 1rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-        min-height: 140px;
-    }
-
-    .dice-box.rolling {
-        animation: shake 0.5s ease-in-out;
-    }
-
-    @keyframes shake {
-        0%, 100% { transform: translateX(0) rotate(0deg); }
-        25% { transform: translateX(-5px) rotate(-5deg); }
-        50% { transform: translateX(5px) rotate(5deg); }
-        75% { transform: translateX(-5px) rotate(-5deg); }
-    }
-
-    .dice-label {
-        font-size: 0.7rem;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        font-weight: 600;
-    }
-
-    .dice-value {
-        font-size: 3rem;
-        font-weight: 700;
-        font-variant-numeric: tabular-nums;
-    }
-
-    .dice-value.empty {
-        color: #475569;
-    }
-
-    .roll-btn {
-        width: 100%;
-        background: linear-gradient(135deg, var(--accent-primary) 0%, #8b5cf6 100%);
-        border: none;
-        border-radius: 16px;
-        padding: 1.125rem 2rem;
-        color: white;
-        font-size: 1.125rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
-        margin-bottom: 1rem;
-    }
-
-    .roll-btn:active {
-        transform: translateY(2px);
-    }
-
-    .next-turn-btn {
-        width: 100%;
-        background: rgba(34, 197, 94, 0.2);
-        border: 2px solid rgba(34, 197, 94, 0.4);
-        color: #86efac;
-        border-radius: 16px;
-        padding: 1rem 2rem;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .next-turn-btn:active {
-        transform: scale(0.98);
-    }
-
-    /* History */
-    .history-section {
-        margin-top: 2rem;
-        padding: 1.5rem;
-        background: var(--glass-bg);
-        backdrop-filter: blur(20px);
-        border: 2px solid var(--border-color);
-        border-radius: 20px;
-    }
-
-    .history-title {
-        font-size: 1.125rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        color: var(--text-secondary);
-    }
-
-    .history-list {
-        display: grid;
-        gap: 0.5rem;
-        max-height: 300px;
-        overflow-y: auto;
-    }
-
-    .history-item {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.75rem;
-        background: var(--bg-secondary);
-        border-radius: 12px;
-        border: 1px solid var(--border-color);
-    }
-
-    .history-color {
-        width: 24px;
-        height: 24px;
-        border-radius: 6px;
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        flex-shrink: 0;
-    }
-
-    .history-info {
-        flex: 1;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .history-player {
-        font-weight: 500;
-    }
-
-    .history-rolls {
-        color: var(--text-muted);
-        font-size: 0.9rem;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 640px) {
         .container {
-            padding: 1rem 0.75rem 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem 1rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Setup Screen */
+        .setup-screen {
+            padding-top: 80px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .setup-screen.hidden {
+            display: none;
+        }
+
+        .game-screen {
+            padding-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .game-screen.active {
+            display: block;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
         }
 
         h1 {
-            font-size: 1.75rem;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
         }
 
-        .dice-container {
-            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Setup Form */
+        .setup-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="text"] {
+            text-transform: uppercase;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #818cf8;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .player-inputs {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .player-input-row {
+            display: grid;
+            grid-template-columns: 40px 1fr;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .player-color {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+        }
+
+        .btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, #8b5cf6 100%);
+            border: none;
+            border-radius: 16px;
+            padding: 1.125rem 2rem;
+            color: white;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+        }
+
+        .btn-secondary {
+            background: rgba(99, 102, 241, 0.2);
+            border: 2px solid var(--border-color);
+            box-shadow: none;
+            margin-top: 1rem;
+        }
+
+        /* Game Screen */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+        }
+
+        .current-player {
+            display: flex;
+            align-items: center;
             gap: 0.75rem;
         }
 
+        .player-indicator {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .player-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .reset-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Number Display */
+        .dice-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
         .dice-box {
-            padding: 1.5rem 0.75rem;
-            min-height: 120px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+            backdrop-filter: blur(20px);
+            border: 3px solid;
+            border-radius: 20px;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-height: 140px;
+        }
+
+        .dice-box.rolling {
+            animation: glow 0.6s ease-in-out;
+        }
+
+        @keyframes glow {
+            0% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(99, 102, 241, 0);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(99, 102, 241, 0.6);
+            }
+            100% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(99, 102, 241, 0);
+            }
+        }
+
+        .dice-value.generating {
+            animation: numberFlip 0.5s ease-in-out;
+        }
+
+        @keyframes numberFlip {
+            0% { 
+                transform: rotateX(0deg);
+                opacity: 1;
+            }
+            50% { 
+                transform: rotateX(90deg);
+                opacity: 0;
+            }
+            100% { 
+                transform: rotateX(0deg);
+                opacity: 1;
+            }
+        }
+
+        .dice-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
         }
 
         .dice-value {
-            font-size: 2.5rem;
+            font-size: 3rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
         }
 
-        .game-header {
-            flex-direction: column;
-            gap: 1rem;
-            text-align: center;
+        .dice-value.empty {
+            color: #475569;
         }
-    }
-</style>
-```
 
+        .roll-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, #8b5cf6 100%);
+            border: none;
+            border-radius: 16px;
+            padding: 1.125rem 2rem;
+            color: white;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
+            margin-bottom: 1rem;
+        }
+
+        .roll-btn:active {
+            transform: translateY(2px);
+        }
+
+        .next-turn-btn {
+            width: 100%;
+            background: rgba(34, 197, 94, 0.2);
+            border: 2px solid rgba(34, 197, 94, 0.4);
+            color: #86efac;
+            border-radius: 16px;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .next-turn-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* History */
+        .history-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+        }
+
+        .history-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .history-list {
+            display: grid;
+            gap: 0.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .history-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+
+        .history-info {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-player {
+            font-weight: 500;
+        }
+
+        .history-rolls {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem 0.75rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .dice-container {
+                grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+                gap: 0.75rem;
+            }
+
+            .dice-box {
+                padding: 1.5rem 0.75rem;
+                min-height: 120px;
+            }
+
+            .dice-value {
+                font-size: 2.5rem;
+            }
+
+            .game-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Setup Screen -->
@@ -430,269 +467,279 @@
                 <p class="subtitle">Setup your multiplayer number game</p>
             </header>
 
-```
-        <div class="setup-card">
-            <div class="form-group">
-                <label for="numPlayers">Number of Players</label>
-                <input type="number" id="numPlayers" min="2" max="8" value="2">
-            </div>
-
-            <div class="form-group">
-                <label for="numDice">Numbers per Turn</label>
-                <input type="number" id="numDice" min="1" max="6" value="2">
-            </div>
-
-            <div class="form-group">
-                <label for="minValue">Minimum Value</label>
-                <input type="number" id="minValue" value="1">
-            </div>
-
-            <div class="form-group">
-                <label for="maxValue">Maximum Value</label>
-                <input type="number" id="maxValue" value="6">
-            </div>
-
-            <button class="btn" id="setupPlayersBtn">Setup Players</button>
-        </div>
-
-        <div class="setup-card" id="playerSetupCard" style="display: none;">
-            <div class="form-group">
-                <label>Enter Player Initials</label>
-                <div class="player-inputs" id="playerInputs"></div>
-            </div>
-            <button class="btn" id="startGameBtn">Start Game</button>
-        </div>
-    </div>
-</div>
-
-<!-- Game Screen -->
-<div class="game-screen" id="gameScreen">
-    <div class="container">
-        <div class="game-header">
-            <div class="current-player">
-                <div class="player-indicator" id="currentPlayerColor"></div>
-                <div>
-                    <div class="player-name" id="currentPlayerName"></div>
-                    <div class="subtitle" style="margin: 0;">Your Turn</div>
+            <div class="setup-card">
+                <div class="form-group">
+                    <label for="numPlayers">Number of Players</label>
+                    <input type="number" inputmode="numeric" pattern="[0-9]*" id="numPlayers" min="2" max="8" value="2">
                 </div>
+
+                <div class="form-group">
+                    <label for="numDice">Numbers per Turn</label>
+                    <input type="number" inputmode="numeric" pattern="[0-9]*" id="numDice" min="1" max="6" value="1">
+                </div>
+
+                <div class="form-group">
+                    <label for="minValue">Minimum Value</label>
+                    <input type="number" inputmode="numeric" pattern="[0-9]*" id="minValue" value="1">
+                </div>
+
+                <div class="form-group">
+                    <label for="maxValue">Maximum Value</label>
+                    <input type="number" inputmode="numeric" pattern="[0-9]*" id="maxValue" value="6">
+                </div>
+
+                <button class="btn" id="setupPlayersBtn">Setup Players</button>
             </div>
-            <button class="reset-btn" id="resetBtn">New Game</button>
-        </div>
 
-        <div class="dice-container" id="diceContainer"></div>
-
-        <button class="roll-btn" id="rollBtn">✨ Generate Numbers</button>
-        <button class="next-turn-btn" id="nextTurnBtn" style="display: none;">Next Player →</button>
-
-        <div class="history-section">
-            <div class="history-title">Generation History</div>
-            <div class="history-list" id="historyList"></div>
-        </div>
-
-        <div style="text-align: center; margin-top: 1.5rem; padding: 1rem; color: var(--text-muted); font-size: 0.85rem; opacity: 0.7;">
-            Generated by AI
+            <div class="setup-card" id="playerSetupCard" style="display: none;">
+                <div class="form-group">
+                    <label>Enter Player Initials</label>
+                    <div class="player-inputs" id="playerInputs"></div>
+                </div>
+                <button class="btn" id="startGameBtn">Start Game</button>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    // Player colors
-    const PLAYER_COLORS = [
-        '#ef4444', '#f59e0b', '#10b981', '#3b82f6',
-        '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'
-    ];
+    <!-- Game Screen -->
+    <div class="game-screen" id="gameScreen">
+        <div class="container">
+            <div class="game-header">
+                <div class="current-player">
+                    <div class="player-indicator" id="currentPlayerColor"></div>
+                    <div>
+                        <div class="player-name" id="currentPlayerName"></div>
+                        <div class="subtitle" style="margin: 0;">Your Turn</div>
+                    </div>
+                </div>
+                <button class="reset-btn" id="resetBtn">New Game</button>
+            </div>
 
-    let gameState = {
-        players: [],
-        currentPlayerIndex: 0,
-        numDice: 1,
-        minValue: 1,
-        maxValue: 6,
-        history: [],
-        hasRolled: false
-    };
+            <div class="dice-container" id="diceContainer"></div>
 
-    // Wake Lock
-    let wakeLock = null;
-    async function requestWakeLock() {
-        try {
-            if ('wakeLock' in navigator) {
-                wakeLock = await navigator.wakeLock.request('screen');
-            }
-        } catch (err) {
-            console.log('Wake Lock error:', err);
-        }
-    }
+            <button class="roll-btn" id="rollBtn">✨ Generate Numbers</button>
+            <button class="next-turn-btn" id="nextTurnBtn" style="display: none;">Next Player →</button>
 
-    document.addEventListener('visibilitychange', async () => {
-        if (wakeLock !== null && document.visibilityState === 'visible') {
-            await requestWakeLock();
-        }
-    });
+            <div class="history-section">
+                <div class="history-title">Generation History</div>
+                <div class="history-list" id="historyList"></div>
+            </div>
 
-    requestWakeLock();
+            <div style="text-align: center; margin-top: 1.5rem; padding: 1rem; color: var(--text-muted); font-size: 0.85rem; opacity: 0.7;">
+                Generated by AI
+            </div>
+        </div>
+    </div>
 
-    // Setup Phase
-    document.getElementById('setupPlayersBtn').addEventListener('click', () => {
-        const numPlayers = parseInt(document.getElementById('numPlayers').value);
-        const numDice = parseInt(document.getElementById('numDice').value);
-        const minValue = parseInt(document.getElementById('minValue').value);
-        const maxValue = parseInt(document.getElementById('maxValue').value);
+    <script>
+        // Player colors
+        const PLAYER_COLORS = [
+            '#ef4444', '#f59e0b', '#10b981', '#3b82f6',
+            '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'
+        ];
 
-        if (minValue >= maxValue) {
-            alert('Minimum value must be less than maximum value!');
-            return;
-        }
-
-        gameState.numDice = numDice;
-        gameState.minValue = minValue;
-        gameState.maxValue = maxValue;
-
-        const playerInputs = document.getElementById('playerInputs');
-        playerInputs.innerHTML = '';
-
-        for (let i = 0; i < numPlayers; i++) {
-            const row = document.createElement('div');
-            row.className = 'player-input-row';
-            row.innerHTML = `
-                <div class="player-color" style="background: ${PLAYER_COLORS[i]}"></div>
-                <input type="text" placeholder="Player ${i + 1} initials (e.g., JD)" maxlength="3" data-player="${i}">
-            `;
-            playerInputs.appendChild(row);
-        }
-
-        document.getElementById('playerSetupCard').style.display = 'block';
-    });
-
-    document.getElementById('startGameBtn').addEventListener('click', () => {
-        const inputs = document.querySelectorAll('#playerInputs input');
-        const players = [];
-
-        inputs.forEach((input, index) => {
-            const initials = input.value.trim().toUpperCase() || `P${index + 1}`;
-            players.push({
-                initials: initials,
-                color: PLAYER_COLORS[index]
-            });
-        });
-
-        gameState.players = players;
-        gameState.currentPlayerIndex = 0;
-        gameState.history = [];
-        gameState.hasRolled = false;
-
-        startGame();
-    });
-
-    function startGame() {
-        document.getElementById('setupScreen').classList.add('hidden');
-        document.getElementById('gameScreen').classList.add('active');
-
-        createDiceBoxes();
-        updateCurrentPlayer();
-    }
-
-    function createDiceBoxes() {
-        const container = document.getElementById('diceContainer');
-        container.innerHTML = '';
-
-        for (let i = 0; i < gameState.numDice; i++) {
-            const box = document.createElement('div');
-            box.className = 'dice-box';
-            const currentPlayer = gameState.players[gameState.currentPlayerIndex];
-            box.style.borderColor = currentPlayer.color;
-            box.innerHTML = `
-                <span class="dice-label">Number ${i + 1}</span>
-                <div class="dice-value empty" style="color: ${currentPlayer.color}">?</div>
-            `;
-            container.appendChild(box);
-        }
-    }
-
-    function updateCurrentPlayer() {
-        const currentPlayer = gameState.players[gameState.currentPlayerIndex];
-        document.getElementById('currentPlayerColor').style.background = currentPlayer.color;
-        document.getElementById('currentPlayerName').textContent = currentPlayer.initials;
-        
-        createDiceBoxes();
-        document.getElementById('rollBtn').style.display = 'block';
-        document.getElementById('nextTurnBtn').style.display = 'none';
-        gameState.hasRolled = false;
-    }
-
-    document.getElementById('rollBtn').addEventListener('click', () => {
-        if (gameState.hasRolled) return;
-
-        const boxes = document.querySelectorAll('.dice-box');
-        const rolls = [];
-        
-        boxes.forEach((box, index) => {
-            box.classList.add('rolling');
-            
-            setTimeout(() => {
-                const value = Math.floor(Math.random() * (gameState.maxValue - gameState.minValue + 1)) + gameState.minValue;
-                rolls.push(value);
-                
-                const valueElement = box.querySelector('.dice-value');
-                valueElement.textContent = value;
-                valueElement.classList.remove('empty');
-                
-                box.classList.remove('rolling');
-            }, 500);
-        });
-
-        setTimeout(() => {
-            addToHistory(rolls);
-            gameState.hasRolled = true;
-            document.getElementById('rollBtn').style.display = 'none';
-            document.getElementById('nextTurnBtn').style.display = 'block';
-        }, 600);
-    });
-
-    document.getElementById('nextTurnBtn').addEventListener('click', () => {
-        gameState.currentPlayerIndex = (gameState.currentPlayerIndex + 1) % gameState.players.length;
-        updateCurrentPlayer();
-    });
-
-    function addToHistory(rolls) {
-        const currentPlayer = gameState.players[gameState.currentPlayerIndex];
-        const historyItem = {
-            player: currentPlayer,
-            rolls: rolls,
-            timestamp: new Date()
+        let gameState = {
+            players: [],
+            currentPlayerIndex: 0,
+            numDice: 1,
+            minValue: 1,
+            maxValue: 6,
+            history: [],
+            hasRolled: false
         };
 
-        gameState.history.unshift(historyItem);
-
-        const historyList = document.getElementById('historyList');
-        const item = document.createElement('div');
-        item.className = 'history-item';
-        item.style.animation = 'fadeIn 0.3s ease';
-        item.innerHTML = `
-            <div class="history-color" style="background: ${currentPlayer.color}"></div>
-            <div class="history-info">
-                <span class="history-player">${currentPlayer.initials}</span>
-                <span class="history-rolls">${rolls.join(', ')}</span>
-            </div>
-        `;
-        historyList.insertBefore(item, historyList.firstChild);
-    }
-
-    document.getElementById('resetBtn').addEventListener('click', () => {
-        if (confirm('Start a new game? This will reset everything.')) {
-            location.reload();
+        // Wake Lock
+        let wakeLock = null;
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                }
+            } catch (err) {
+                console.log('Wake Lock error:', err);
+            }
         }
-    });
 
-    // Service Worker
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('service-worker.js')
-                .catch(err => console.log('Service Worker registration failed'));
+        document.addEventListener('visibilitychange', async () => {
+            if (wakeLock !== null && document.visibilityState === 'visible') {
+                await requestWakeLock();
+            }
         });
-    }
-</script>
-```
 
+        requestWakeLock();
+
+        // Setup Phase
+        document.getElementById('setupPlayersBtn').addEventListener('click', () => {
+            const numPlayers = parseInt(document.getElementById('numPlayers').value);
+            const numDice = parseInt(document.getElementById('numDice').value);
+            const minValue = parseInt(document.getElementById('minValue').value);
+            const maxValue = parseInt(document.getElementById('maxValue').value);
+
+            if (minValue >= maxValue) {
+                alert('Minimum value must be less than maximum value!');
+                return;
+            }
+
+            gameState.numDice = numDice;
+            gameState.minValue = minValue;
+            gameState.maxValue = maxValue;
+
+            const playerInputs = document.getElementById('playerInputs');
+            playerInputs.innerHTML = '';
+
+            for (let i = 0; i < numPlayers; i++) {
+                const row = document.createElement('div');
+                row.className = 'player-input-row';
+                row.innerHTML = `
+                    <div class="player-color" style="background: ${PLAYER_COLORS[i]}"></div>
+                    <input type="text" inputmode="text" placeholder="Player ${i + 1} initials (e.g., JD)" maxlength="3" data-player="${i}">
+                `;
+                playerInputs.appendChild(row);
+            }
+
+            document.getElementById('playerSetupCard').style.display = 'block';
+        });
+
+        document.getElementById('startGameBtn').addEventListener('click', () => {
+            const inputs = document.querySelectorAll('#playerInputs input');
+            const players = [];
+
+            inputs.forEach((input, index) => {
+                const initials = input.value.trim().toUpperCase() || `P${index + 1}`;
+                players.push({
+                    initials: initials,
+                    color: PLAYER_COLORS[index]
+                });
+            });
+
+            gameState.players = players;
+            gameState.currentPlayerIndex = 0;
+            gameState.history = [];
+            gameState.hasRolled = false;
+
+            startGame();
+        });
+
+        function startGame() {
+            document.getElementById('setupScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.add('active');
+
+            createDiceBoxes();
+            updateCurrentPlayer();
+        }
+
+        function createDiceBoxes() {
+            const container = document.getElementById('diceContainer');
+            container.innerHTML = '';
+
+            for (let i = 0; i < gameState.numDice; i++) {
+                const box = document.createElement('div');
+                box.className = 'dice-box';
+                const currentPlayer = gameState.players[gameState.currentPlayerIndex];
+                box.style.borderColor = currentPlayer.color;
+                box.innerHTML = `
+                    <span class="dice-label">Number ${i + 1}</span>
+                    <div class="dice-value empty" style="color: ${currentPlayer.color}">?</div>
+                `;
+                container.appendChild(box);
+            }
+        }
+
+        function updateCurrentPlayer() {
+            const currentPlayer = gameState.players[gameState.currentPlayerIndex];
+            document.getElementById('currentPlayerColor').style.background = currentPlayer.color;
+            document.getElementById('currentPlayerName').textContent = currentPlayer.initials;
+            
+            createDiceBoxes();
+            document.getElementById('rollBtn').style.display = 'block';
+            document.getElementById('nextTurnBtn').style.display = 'none';
+            gameState.hasRolled = false;
+        }
+
+        document.getElementById('rollBtn').addEventListener('click', () => {
+            if (gameState.hasRolled) return;
+
+            const boxes = document.querySelectorAll('.dice-box');
+            const rolls = [];
+            
+            boxes.forEach((box, index) => {
+                box.classList.add('rolling');
+                const valueElement = box.querySelector('.dice-value');
+                valueElement.classList.add('generating');
+                
+                // Show random numbers flipping effect
+                let flipCount = 0;
+                const flipInterval = setInterval(() => {
+                    if (flipCount < 8) {
+                        const tempValue = Math.floor(Math.random() * (gameState.maxValue - gameState.minValue + 1)) + gameState.minValue;
+                        valueElement.textContent = tempValue;
+                        flipCount++;
+                    } else {
+                        clearInterval(flipInterval);
+                    }
+                }, 50);
+                
+                setTimeout(() => {
+                    const value = Math.floor(Math.random() * (gameState.maxValue - gameState.minValue + 1)) + gameState.minValue;
+                    rolls.push(value);
+                    
+                    valueElement.textContent = value;
+                    valueElement.classList.remove('empty', 'generating');
+                    
+                    box.classList.remove('rolling');
+                }, 500);
+            });
+
+            setTimeout(() => {
+                addToHistory(rolls);
+                gameState.hasRolled = true;
+                document.getElementById('rollBtn').style.display = 'none';
+                document.getElementById('nextTurnBtn').style.display = 'block';
+            }, 600);
+        });
+
+        document.getElementById('nextTurnBtn').addEventListener('click', () => {
+            gameState.currentPlayerIndex = (gameState.currentPlayerIndex + 1) % gameState.players.length;
+            updateCurrentPlayer();
+        });
+
+        function addToHistory(rolls) {
+            const currentPlayer = gameState.players[gameState.currentPlayerIndex];
+            const historyItem = {
+                player: currentPlayer,
+                rolls: rolls,
+                timestamp: new Date()
+            };
+
+            gameState.history.unshift(historyItem);
+
+            const historyList = document.getElementById('historyList');
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            item.style.animation = 'fadeIn 0.3s ease';
+            item.innerHTML = `
+                <div class="history-color" style="background: ${currentPlayer.color}"></div>
+                <div class="history-info">
+                    <span class="history-player">${currentPlayer.initials}</span>
+                    <span class="history-rolls">${rolls.join(', ')}</span>
+                </div>
+            `;
+            historyList.insertBefore(item, historyList.firstChild);
+        }
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            if (confirm('Start a new game? This will reset everything.')) {
+                location.reload();
+            }
+        });
+
+        // Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .catch(err => console.log('Service Worker registration failed'));
+            });
+        }
+    </script>
 </body>
 </html>
