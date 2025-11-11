@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Number Generator</title>
+    <title>Game Number Generator</title>
     <meta name="description" content="AI-powered multiplayer game number generator">
     <meta name="theme-color" content="#6366f1">
     <link rel="manifest" href="manifest.json">
@@ -470,6 +470,38 @@
             transform: scale(0.98);
         }
 
+        /* Total Display */
+        .total-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 1.75rem;
+            margin-top: 1.5rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .total-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .total-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-variant-numeric: tabular-nums;
+        }
+
         /* AI Badge */
         .ai-badge {
             display: flex;
@@ -588,9 +620,12 @@
                         <input type="number" inputmode="numeric" pattern="[0-9]*" id="numPlayers" min="2" max="8" value="2">
                     </div>
                     <div class="player-chips" id="playerChips"></div>
-                    <div class="setup-field" style="margin-bottom: 1rem;">
+                    <div class="setup-field" style="margin-bottom: 0.5rem;">
                         <label>Player Initials</label>
                         <input type="text" inputmode="text" id="playerInitials" placeholder="e.g., JD" maxlength="3">
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem; font-style: italic;">
+                        💡 Press Enter after typing each player's initials
                     </div>
                 </div>
 
@@ -618,6 +653,12 @@
                 <button class="btn-next" id="nextBtn">Next Player →</button>
             </div>
 
+            <!-- Total Display -->
+            <div class="total-display" id="totalDisplay" style="display: none;">
+                <div class="total-label">Total</div>
+                <div class="total-value" id="totalValue">0</div>
+            </div>
+
             <!-- AI Badge -->
             <div class="ai-badge">
                 <div class="ai-badge-icon">✦</div>
@@ -642,23 +683,54 @@
             hasGenerated: false
         };
 
-        // Wake Lock
-        let wakeLock = null;
-        async function requestWakeLock() {
+        // Wake Lock - Improved Implementation
+        window.currentWakeLock = null;
+
+        async function lockScreen() {
+            if (!navigator.wakeLock) {
+                console.log("Wake Lock API not supported");
+                return;
+            }
             try {
-                if ('wakeLock' in navigator) {
-                    wakeLock = await navigator.wakeLock.request('screen');
-                }
-            } catch (err) {}
+                window.currentWakeLock = await navigator.wakeLock.request('screen');
+                console.log('Wake Lock enabled');
+                
+                window.currentWakeLock.addEventListener('release', () => {
+                    console.log('Wake Lock released');
+                });
+            } catch(err) {
+                console.log('Wake Lock error:', err);
+            }
         }
 
+        async function releaseScreen() {
+            if (window.currentWakeLock && !window.currentWakeLock.released) {
+                await window.currentWakeLock.release();
+                window.currentWakeLock = null;
+            }
+        }
+
+        async function toggleWakeLock() {
+            if (!navigator.wakeLock) {
+                console.log("Your device does not support the Wake Lock API");
+                return;
+            }
+            if (window.currentWakeLock && !window.currentWakeLock.released) {
+                await releaseScreen();
+            } else {
+                await lockScreen();
+            }
+        }
+
+        // Request wake lock when page loads
+        lockScreen();
+
+        // Re-request wake lock when page becomes visible
         document.addEventListener('visibilitychange', async () => {
-            if (wakeLock !== null && document.visibilityState === 'visible') {
-                await requestWakeLock();
+            if (document.visibilityState === 'visible') {
+                await lockScreen();
             }
         });
-
-        requestWakeLock();
 
         // Mode Selection
         document.getElementById('soloModeBtn').addEventListener('click', () => {
@@ -757,14 +829,14 @@
             if (gameState.mode === 'multi') {
                 const numPlayers = parseInt(document.getElementById('numPlayers').value);
                 if (gameState.players.length < numPlayers) {
-                    alert(`Please add ${numPlayers - gameState.players.length} more player(s)`);
+                    alert(`Please add all ${numPlayers} players. You have ${gameState.players.length} so far.`);
                     return;
                 }
                 document.getElementById('gameHeader').style.display = 'flex';
                 updateCurrentPlayer();
             }
 
-            document.getElementById('quickSetup').classList.add('hidden');
+            document.getElementById('quickSetup').style.display = 'none';
             createNumberBoxes();
         });
 
@@ -795,6 +867,7 @@
             document.getElementById('currentPlayerName').textContent = player.initials;
             createNumberBoxes();
             document.getElementById('nextBtn').classList.remove('active');
+            document.getElementById('totalDisplay').style.display = 'none';
             gameState.hasGenerated = false;
         }
 
@@ -803,6 +876,7 @@
             if (gameState.hasGenerated && gameState.mode === 'multi') return;
 
             const boxes = document.querySelectorAll('.number-box');
+            const generatedNumbers = [];
             
             boxes.forEach((box, index) => {
                 box.classList.add('generating');
@@ -822,18 +896,24 @@
                 
                 setTimeout(() => {
                     const value = Math.floor(Math.random() * (gameState.maxVal - gameState.minVal + 1)) + gameState.minVal;
+                    generatedNumbers.push(value);
                     valueElement.textContent = value;
                     valueElement.classList.remove('empty', 'flipping');
                     box.classList.remove('generating');
                 }, 500);
             });
 
-            if (gameState.mode === 'multi') {
-                gameState.hasGenerated = true;
-                setTimeout(() => {
+            setTimeout(() => {
+                // Calculate and display total
+                const total = generatedNumbers.reduce((sum, num) => sum + num, 0);
+                document.getElementById('totalValue').textContent = total;
+                document.getElementById('totalDisplay').style.display = 'flex';
+
+                if (gameState.mode === 'multi') {
+                    gameState.hasGenerated = true;
                     document.getElementById('nextBtn').classList.add('active');
-                }, 600);
-            }
+                }
+            }, 600);
         });
 
         // Next Player
