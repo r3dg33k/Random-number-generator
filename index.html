@@ -430,6 +430,38 @@
             gap: 1rem;
         }
 
+           /* Total Display */
+        .total-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 1.75rem;
+            margin-top: 1.5rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .total-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .total-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-variant-numeric: tabular-nums;
+        }
+
         .btn-generate {
             width: 100%;
             background: linear-gradient(135deg, var(--accent-primary) 0%, #8b5cf6 100%);
@@ -470,37 +502,7 @@
             transform: scale(0.98);
         }
 
-        /* Total Display */
-        .total-display {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1.25rem 1.75rem;
-            margin-top: 1.5rem;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
-            backdrop-filter: blur(20px);
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .total-label {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .total-value {
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-variant-numeric: tabular-nums;
-        }
+     
 
         /* AI Badge */
         .ai-badge {
