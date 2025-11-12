@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Number Generator</title>
+    <title>Random Number Generator</title>
     <meta name="description" content="AI-powered multiplayer game number generator">
     <meta name="theme-color" content="#6366f1">
     <link rel="manifest" href="manifest.json">
@@ -32,8 +32,9 @@
             font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
             min-height: 100vh;
+            height: 100vh;
             color: var(--text-primary);
-            overflow-x: hidden;
+            overflow: hidden;
             position: relative;
         }
 
@@ -430,38 +431,6 @@
             gap: 1rem;
         }
 
-           /* Total Display */
-        .total-display {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1.25rem 1.75rem;
-            margin-top: 1.5rem;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
-            backdrop-filter: blur(20px);
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .total-label {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .total-value {
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-variant-numeric: tabular-nums;
-        }
-
         .btn-generate {
             width: 100%;
             background: linear-gradient(135deg, var(--accent-primary) 0%, #8b5cf6 100%);
@@ -502,7 +471,43 @@
             transform: scale(0.98);
         }
 
-     
+        /* Total Display */
+        .total-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .total-box {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
+            backdrop-filter: blur(20px);
+            border: 3px solid rgba(34, 197, 94, 0.5);
+            border-radius: 20px;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-height: 140px;
+        }
+
+        .total-label {
+            font-size: 0.7rem;
+            color: #86efac;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .total-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #22c55e;
+            font-variant-numeric: tabular-nums;
+        }
 
         /* AI Badge */
         .ai-badge {
@@ -557,6 +562,20 @@
             }
 
             .number-value {
+                font-size: 2.5rem;
+            }
+
+            .total-display {
+                grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+                gap: 0.75rem;
+            }
+
+            .total-box {
+                padding: 1.5rem 0.75rem;
+                min-height: 120px;
+            }
+
+            .total-value {
                 font-size: 2.5rem;
             }
 
@@ -649,16 +668,18 @@
             <!-- Numbers Display -->
             <div class="numbers-container" id="numbersContainer"></div>
 
+            <!-- Total Display -->
+            <div class="total-display" id="totalDisplay" style="display: none;">
+                <div class="total-box">
+                    <span class="total-label">Total</span>
+                    <div class="total-value" id="totalValue">0</div>
+                </div>
+            </div>
+
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <button class="btn-generate" id="generateBtn">✨ Generate Numbers</button>
                 <button class="btn-next" id="nextBtn">Next Player →</button>
-            </div>
-
-            <!-- Total Display -->
-            <div class="total-display" id="totalDisplay" style="display: none;">
-                <div class="total-label">Total</div>
-                <div class="total-value" id="totalValue">0</div>
             </div>
 
             <!-- AI Badge -->
