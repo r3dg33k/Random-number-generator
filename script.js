@@ -7,27 +7,51 @@ const state = {
     noDuplicates: false,
     isGenerating: false,
     players: [],
-    currentPlayer: 0
+    currentPlayerIndex: 0
 };
+
+const PLAYER_COLORS = [
+    '#ef4444', '#f59e0b', '#10b981', '#3b82f6',
+    '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'
+];
 
 // DOM Elements
 const elements = {
     modeScreen: document.getElementById('modeScreen'),
+    setupScreen: document.getElementById('setupScreen'),
     gameScreen: document.getElementById('gameScreen'),
+
+    // Buttons
     soloBtn: document.getElementById('soloModeBtn'),
     multiBtn: document.getElementById('multiModeBtn'),
     backBtn: document.getElementById('backBtn'),
     generateBtn: document.getElementById('generateBtn'),
+    addPlayerBtn: document.getElementById('addPlayerBtn'),
+    startGameBtn: document.getElementById('startGameBtn'),
+    cancelSetupBtn: document.getElementById('cancelSetupBtn'),
+    nextPlayerBtn: document.getElementById('nextPlayerBtn'),
+
+    // Display Areas
     resultsGrid: document.getElementById('resultsGrid'),
+    playerChips: document.getElementById('playerChips'),
+    multiplayerHeader: document.getElementById('multiplayerHeader'),
+    totalDisplay: document.getElementById('totalDisplay'),
+    totalValue: document.getElementById('totalValue'),
+    currentPlayerDot: document.getElementById('currentPlayerDot'),
+    currentPlayerName: document.getElementById('currentPlayerName'),
+
+    // Inputs
     inputs: {
         min: document.getElementById('minVal'),
         max: document.getElementById('maxVal'),
         count: document.getElementById('numCount'),
-        noDuplicates: document.getElementById('noDuplicates')
+        noDuplicates: document.getElementById('noDuplicates'),
+        setupNumPlayers: document.getElementById('setupNumPlayers'),
+        playerInitials: document.getElementById('playerInitials')
     }
 };
 
-// Sound Effects (Simple oscillator-based for no assets dependency)
+// Sound Effects
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function playSound(type) {
@@ -81,7 +105,6 @@ function getSecureRandom(min, max) {
 function generateNumbers() {
     const { min, max, count, noDuplicates } = state;
 
-    // Validation
     if (min >= max) {
         alert("Min value must be less than Max value");
         return null;
@@ -111,6 +134,53 @@ function generateNumbers() {
     return numbers;
 }
 
+// Player Management
+function updatePlayerChips() {
+    elements.playerChips.innerHTML = '';
+    state.players.forEach(player => {
+        const chip = document.createElement('div');
+        chip.className = 'player-chip';
+        chip.innerHTML = `
+            <div class="player-chip-dot" style="background: ${player.color}"></div>
+            <span>${player.initials}</span>
+        `;
+        elements.playerChips.appendChild(chip);
+    });
+}
+
+function addPlayer() {
+    const initials = elements.inputs.playerInitials.value.trim().toUpperCase();
+    const maxPlayers = parseInt(elements.inputs.setupNumPlayers.value);
+
+    if (!initials) return;
+    if (state.players.length >= maxPlayers) {
+        alert(`Maximum ${maxPlayers} players allowed.`);
+        return;
+    }
+
+    state.players.push({
+        initials: initials,
+        color: PLAYER_COLORS[state.players.length % PLAYER_COLORS.length]
+    });
+
+    elements.inputs.playerInitials.value = '';
+    updatePlayerChips();
+    elements.inputs.playerInitials.focus();
+}
+
+function updateCurrentPlayerUI() {
+    const player = state.players[state.currentPlayerIndex];
+    elements.currentPlayerName.textContent = player.initials;
+    elements.currentPlayerDot.style.background = player.color;
+    elements.currentPlayerDot.style.boxShadow = `0 0 15px ${player.color}`;
+
+    // Reset for new turn
+    elements.nextPlayerBtn.style.display = 'none';
+    elements.generateBtn.style.display = 'flex';
+    elements.totalDisplay.style.display = 'none';
+    updateGrid(); // Clears numbers
+}
+
 // UI Updates
 function updateGrid() {
     elements.resultsGrid.innerHTML = '';
@@ -132,14 +202,13 @@ async function animateGeneration(finalNumbers) {
 
     const cards = document.querySelectorAll('.number-card');
 
-    // Animate each card
     const promises = Array.from(cards).map((card, index) => {
         return new Promise(resolve => {
             const valueEl = card.querySelector('.number-value');
             card.classList.add('generating');
 
             let ticks = 0;
-            const maxTicks = 10 + (index * 2); // Stagger effect
+            const maxTicks = 10 + (index * 2);
 
             const interval = setInterval(() => {
                 valueEl.textContent = Math.floor(Math.random() * 99);
@@ -162,6 +231,17 @@ async function animateGeneration(finalNumbers) {
     playSound('success');
     state.isGenerating = false;
     elements.generateBtn.disabled = false;
+
+    // Show Total
+    const total = finalNumbers.reduce((a, b) => a + b, 0);
+    elements.totalValue.textContent = total;
+    elements.totalDisplay.style.display = 'flex';
+
+    // Multiplayer Turn Logic
+    if (state.mode === 'multi') {
+        elements.generateBtn.style.display = 'none';
+        elements.nextPlayerBtn.style.display = 'flex';
+    }
 }
 
 // Event Listeners
@@ -169,26 +249,55 @@ function init() {
     // Mode Selection
     elements.soloBtn.addEventListener('click', () => {
         state.mode = 'solo';
-        switchScreen('game');
+        elements.modeScreen.style.display = 'none';
+        elements.gameScreen.classList.add('active');
+        elements.multiplayerHeader.style.display = 'none';
         updateGrid();
     });
 
     elements.multiBtn.addEventListener('click', () => {
         state.mode = 'multi';
-        // For now, multi behaves like solo but we can expand later
-        switchScreen('game');
-        updateGrid();
+        state.players = [];
+        updatePlayerChips();
+        elements.modeScreen.style.display = 'none';
+        elements.setupScreen.style.display = 'flex';
     });
 
+    // Setup Screen
+    elements.addPlayerBtn.addEventListener('click', addPlayer);
+    elements.inputs.playerInitials.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addPlayer();
+    });
+
+    elements.startGameBtn.addEventListener('click', () => {
+        const required = parseInt(elements.inputs.setupNumPlayers.value);
+        if (state.players.length < required) {
+            alert(`Please add all ${required} players.`);
+            return;
+        }
+        elements.setupScreen.style.display = 'none';
+        elements.gameScreen.classList.add('active');
+        elements.multiplayerHeader.style.display = 'flex';
+        state.currentPlayerIndex = 0;
+        updateCurrentPlayerUI();
+    });
+
+    elements.cancelSetupBtn.addEventListener('click', () => {
+        elements.setupScreen.style.display = 'none';
+        elements.modeScreen.style.display = 'flex';
+    });
+
+    // Game Controls
     elements.backBtn.addEventListener('click', () => {
-        switchScreen('mode');
+        if (confirm('Return to menu?')) {
+            location.reload();
+        }
     });
 
-    // Inputs
     elements.inputs.count.addEventListener('change', (e) => {
         let val = parseInt(e.target.value);
         if (val < 1) val = 1;
-        if (val > 12) val = 12; // Cap at 12 for UI sanity
+        if (val > 12) val = 12;
         state.count = val;
         e.target.value = val;
         updateGrid();
@@ -198,24 +307,43 @@ function init() {
     elements.inputs.max.addEventListener('change', (e) => state.max = parseInt(e.target.value));
     elements.inputs.noDuplicates.addEventListener('change', (e) => state.noDuplicates = e.target.checked);
 
-    // Generate
     elements.generateBtn.addEventListener('click', () => {
         const numbers = generateNumbers();
         if (numbers) animateGeneration(numbers);
     });
+
+    elements.nextPlayerBtn.addEventListener('click', () => {
+        state.currentPlayerIndex = (state.currentPlayerIndex + 1) % state.players.length;
+        updateCurrentPlayerUI();
+    });
 }
 
-function switchScreen(screenName) {
-    if (screenName === 'game') {
-        elements.modeScreen.style.display = 'none';
-        elements.gameScreen.classList.add('active');
-    } else {
-        elements.gameScreen.classList.remove('active');
-        setTimeout(() => {
-            elements.modeScreen.style.display = 'flex';
-        }, 100);
+// Wake Lock Implementation
+let wakeLock = null;
+
+async function requestWakeLock() {
+    try {
+        if ('wakeLock' in navigator) {
+            wakeLock = await navigator.wakeLock.request('screen');
+            console.log('Wake Lock is active');
+
+            wakeLock.addEventListener('release', () => {
+                console.log('Wake Lock released');
+            });
+        }
+    } catch (err) {
+        console.error(`${err.name}, ${err.message}`);
     }
 }
 
-// Start
+// Handle visibility change to re-acquire lock
+document.addEventListener('visibilitychange', async () => {
+    if (wakeLock !== null && document.visibilityState === 'visible') {
+        await requestWakeLock();
+    }
+});
+
 init();
+
+// Request lock on start
+requestWakeLock();

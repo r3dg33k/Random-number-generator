@@ -166,6 +166,59 @@ h3 {
     line-height: 1.5;
 }
 
+/* Setup Screen */
+.setup-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80vh;
+    animation: fadeIn 0.5s ease;
+}
+
+.player-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+    min-height: 50px;
+}
+
+.player-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    font-size: 0.9rem;
+    animation: popIn 0.3s ease;
+}
+
+.player-chip-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.btn-icon {
+    background: var(--accent-primary);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    color: #000;
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    transition: transform 0.2s;
+}
+
+.btn-icon:active {
+    transform: scale(0.9);
+}
+
 /* Game Screen */
 .game-screen {
     display: none;
@@ -176,6 +229,40 @@ h3 {
 
 .game-screen.active {
     display: flex;
+}
+
+/* Game Header (Multiplayer) */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    padding: 1rem 1.5rem;
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+}
+
+.current-player-badge {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.player-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px currentColor;
+}
+
+.turn-indicator {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 
 /* Controls Panel */
@@ -339,6 +426,34 @@ input[type="checkbox"]:checked+.custom-checkbox::after {
 .number-value.empty {
     color: var(--glass-border);
     font-size: 2rem;
+}
+
+/* Total Display */
+.total-display {
+    background: rgba(0, 255, 157, 0.1);
+    border: 1px solid rgba(0, 255, 157, 0.3);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    animation: popIn 0.4s ease;
+}
+
+.total-label {
+    color: var(--success);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+}
+
+.total-value {
+    color: var(--success);
+    font-size: 2.5rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
 }
 
 /* Buttons */

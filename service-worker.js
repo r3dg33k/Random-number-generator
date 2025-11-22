@@ -1,8 +1,10 @@
 
-const CACHE_NAME = 'random-number-generator-v1';
+const CACHE_NAME = 'random-number-generator-v2';
 const urlsToCache = [
   './',
   './index.html',
+  './style.css',
+  './script.js',
   './manifest.json'
 ];
 
