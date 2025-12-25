@@ -10,7 +10,7 @@ import { requestWakeLock, releaseWakeLock, reacquireWakeLock } from '../utils/wa
 
 const NormalMode = () => {
   const navigate = useNavigate();
-  const [currentNumber, setCurrentNumber] = useState(null);
+  const [currentNumbers, setCurrentNumbers] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const NormalMode = () => {
     };
   }, []);
 
-  const generateNumber = () => {
+  const generateNumbers = () => {
     if (isGenerating) return;
     
     setIsGenerating(true);
@@ -35,48 +35,54 @@ const NormalMode = () => {
     
     let counter = 0;
     const interval = setInterval(() => {
-      setCurrentNumber(Math.floor(Math.random() * 6) + 1);
+      setCurrentNumbers([
+        Math.floor(Math.random() * 6) + 1,
+        Math.floor(Math.random() * 6) + 1
+      ]);
       counter++;
       
       if (counter >= 10) {
         clearInterval(interval);
-        const finalNumber = Math.floor(Math.random() * 6) + 1;
-        setCurrentNumber(finalNumber);
+        const finalNumbers = [
+          Math.floor(Math.random() * 6) + 1,
+          Math.floor(Math.random() * 6) + 1
+        ];
+        setCurrentNumbers(finalNumbers);
         setIsGenerating(false);
       }
     }, 100);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col">
+    <div className=\"min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col\">
       <SettingsMenu />
       
-      <div className="p-4">
+      <div className=\"p-4\">
         <Button
-          variant="ghost"
+          variant=\"ghost\"
           onClick={() => navigate('/')}
-          className="gap-2"
+          className=\"gap-2\"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className=\"w-4 h-4\" />
           Back
         </Button>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 space-y-12">
+      <div className=\"flex-1 flex flex-col items-center justify-center p-4 space-y-12\">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center space-y-2"
+          className=\"text-center space-y-2\"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100">
+          <h1 className=\"text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100\">
             Normal Mode
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Tap the button to generate a random number
+          <p className=\"text-slate-600 dark:text-slate-400\">
+            Tap the button to generate random numbers
           </p>
         </motion.div>
 
-        <NumberDisplay number={currentNumber} isGenerating={isGenerating} />
+        <NumberDisplay numbers={currentNumbers} isGenerating={isGenerating} />
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -84,13 +90,13 @@ const NormalMode = () => {
           transition={{ delay: 0.2 }}
         >
           <Button
-            size="lg"
-            onClick={generateNumber}
+            size=\"lg\"
+            onClick={generateNumbers}
             disabled={isGenerating}
-            className="px-12 py-6 text-lg gap-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+            className=\"px-12 py-6 text-lg gap-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300\"
           >
             <RefreshCw className={`w-5 h-5 ${isGenerating ? 'animate-spin' : ''}`} />
-            {isGenerating ? 'Generating...' : 'Generate Number'}
+            {isGenerating ? 'Generating...' : 'Generate Numbers'}
           </Button>
         </motion.div>
       </div>
